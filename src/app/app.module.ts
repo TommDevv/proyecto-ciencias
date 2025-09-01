@@ -1,18 +1,32 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { IndexComponent } from './index/index.component';
+import { AppHeaderComponent } from './app-header/app-header.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { InicioComponent } from './inicio/inicio.component';
+import { BusquedaInternaLayoutComponent } from './busqueda-interna/busqueda-interna-layout/busqueda-interna-layout.component';
+import { BusquedaLinealComponent } from './busqueda-interna/busqueda-lineal/busqueda-lineal.component';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    IndexComponent,
+    AppHeaderComponent,
+    InicioComponent,
+    BusquedaInternaLayoutComponent,
+    BusquedaLinealComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,  
+    NgbModule,
+    FormsModule      
   ],
-  providers: [],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

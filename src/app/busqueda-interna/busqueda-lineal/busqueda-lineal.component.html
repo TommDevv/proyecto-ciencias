@@ -1,0 +1,56 @@
+<div class="container justify-content-center">
+    <h1 class="my-3 text-center courier-prime-bold">Algoritmo de busqueda Lineal</h1>
+    <p class="text-center mb-5">La busqueda lineal coinsiste en recorrer secuencialmente cada elemento de una estructura de datos hasta encontrar el valor buscado o confirmar que no existe. Su complejidad es igual a O(n) = n</p>
+    <h1 class="mt-4 text-start courier-prime-bold">Ejemplo Práctico:</h1>
+        <div class="row my-2">
+            <div class="row">
+                <div class="col-3" *ngIf="!mostrarEstructura">
+                    <label class="form-label mb-2" for="cantidad-n">Cantidad de datos (n) a almacenar</label>
+                    <div class="input-group" id="cantidad-n">
+                        <input [(ngModel)]="cantreg" class="form-control form-control-custom" type="number" min="0" oninput="this.value = Math.abs(this.value)">
+                        <button class="btn btn-info" type="button" (click)="generarEstructura()">Generar Estructura</button>
+                    </div>
+                </div>
+                <div class="col-3" *ngIf="mostrarEstructura">
+                    <label class="form-label mb-2" for="cantidad-n">Ingresar un valor a la estructura</label>
+                    <div class="input-group" id="cantidad-n">
+                        <input [(ngModel)]="ingreso" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
+                        <button class="btn btn-info" type="button" (click)="anadir()">Ingresar</button>
+                    </div>
+                </div>
+                <div class="col-3" *ngIf="mostrarEstructura">
+                    <label class="form-label mb-2" for="cantidad-n">Buscar valor</label>
+                    <div class="input-group" id="cantidad-n">
+                        <input [(ngModel)]="busqueda" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
+                        <button class="btn btn-info" type="button" (click)="buscar()">Buscar</button>
+                    </div>
+                </div>
+                <div class="col-3" *ngIf="mostrarEstructura">
+                    <label class="form-label mb-2" for="cantidad-n">Eliminar valor</label>
+                    <div class="input-group" id="cantidad-n">
+                        <input [(ngModel)]="retiro" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
+                        <button class="btn btn-info" type="button" (click)="eliminar()">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-4" style="padding-inline: 400px;" *ngIf="mostrarEstructura">
+                <h3 class="mt-4 text-start courier-prime-bold">Estructura Generada:</h3>
+                <h4 class="my-3" *ngIf="anadirFinalizado || eliminarFinalizado || buscarFinalizado">{{resultado}}</h4>
+                <h4 class="mb-3">Filas recorridas: {{contador}}</h4>
+                <table class="table table-dark table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Posicion</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let value of values; let i = index">
+                            <td>{{i}}</td>
+                            <td>{{value}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</div>

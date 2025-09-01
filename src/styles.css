@@ -1,1 +1,42 @@
-/* You can add global styles to this file, and also import other style files */
+
+.courier-prime-regular {
+  font-family: "Courier Prime", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.courier-prime-bold {
+  font-family: "Courier Prime", monospace;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.courier-prime-regular-italic {
+  font-family: "Courier Prime", monospace;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.courier-prime-bold-italic {
+  font-family: "Courier Prime", monospace;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.vt323-regular {
+  font-family: "VT323", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+input.form-control.form-control-custom {
+    border-color: white !important;
+    background-color: rgba(34, 34, 45, 0.95) !important;
+    color:white !important;
+}
+
+button.btn.btn-info{
+    color:white !important;
+    background-color: #0d928d;
+    border-color: white !important;
+}

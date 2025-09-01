@@ -1,0 +1,23 @@
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-6 courier-prime-bold">
+            <div class="row my-4">
+                <h2><strong><i class="bi bi-bar-chart-line"></i> Algoritmos de Búsqueda</strong></h2>
+            </div>
+                <ul class="my-2 ps-4 list-unstyled">
+                    <li *ngFor="let enlace of routes">
+                        <div class="row my-2">
+                            <button (click)="redirect(enlace.ruta)" class="btn custom-list-btn text-start"><strong><i class="bi bi-caret-right-fill"></i> {{enlace.titulo}}</strong></button>
+                        </div>
+                    </li>
+                </ul>
+        </div>
+        <div class="col-6 courier-prime-bold">
+            <div class="row my-4">
+                <h2><strong><i class="bi bi-bezier2"></i> Grafos</strong></h2>
+            </div>
+            <div class="row">
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+.navbar{
+  font-size: 2rem; 
+  background-color: rgba(34, 34, 45, 0.95);
+}
+
+.navbar {
+  font-size: 2rem;
+  background-color: rgba(34, 34, 45, 0.95);
+  color: #16fffb;          /* color personalizado */
+}
+
+.navbar .nav-link,
+.navbar .dropdown-menu,
+.navbar .dropdown-item {
+  color: #16fffb;  
+}
+
+.navbar .dropdown-menu,
+.navbar .dropdown-item {
+  color: #16fffb;  
+  background-color: rgba(34, 34, 45, 0.95);
+}
+
+.navbar .nav-link:disabled,
+.navbar .dropdown-menu:disabled,
+.navbar .dropdown-item:disabled {
+  color: #16fffb69;  
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-item:hover {
+  color: #16fffb;
+  background-color: rgba(50, 50, 68, 0.95);
+}
+
+.dropdown-menu{
+  font-size: 1.7rem; 
+}
