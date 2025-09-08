@@ -29,7 +29,7 @@
   font-style: normal;
 }
 
-input.form-control.form-control-custom {
+input.form-control.form-control-custom, select.form-select.form-select-custom {
     border-color: white !important;
     background-color: rgba(34, 34, 45, 0.95) !important;
     color:white !important;
