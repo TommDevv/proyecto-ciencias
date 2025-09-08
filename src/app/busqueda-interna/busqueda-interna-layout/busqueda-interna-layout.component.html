@@ -1,17 +1,16 @@
 <div class="container justify-content-center">
     <h1 class="my-3 text-center courier-prime-bold">Algoritmos de busqueda Interna</h1>
-    <p class="text-center">Los algoritmos de busqueda interna trabajan con estructuras de datos almacenadas en el dispositivo de almacenamiento principal a través de la memoria volátil</p>
     <div class="row my-4">
         <div class="col-6 courier-prime-bold px-5">
             <button [routerLink]="['/busqueda-lineal']" class="btn custom-list-btn text-start"><strong><i class="bi bi-caret-right-fill"></i>Busqueda Lineal</strong></button>
         </div>
         <div class="col-6 courier-prime-bold px-5">
-            <button routerLink="" class="btn custom-list-btn text-start"><strong><i class="bi bi-caret-right-fill"></i>Funciones Hash</strong></button>
+            <button routerLink="" class="btn custom-list-btn text-start" [routerLink]="['/hash']"><strong><i class="bi bi-caret-right-fill"></i>Funciones Hash</strong></button>
         </div>
     </div>
     <div class="row my-4">
         <div class="col-6 courier-prime-bold px-5">
-            <button routerLink="" class="btn custom-list-btn text-start"><strong><i class="bi bi-caret-right-fill"></i>Busqueda Binaria</strong></button>
+            <button [routerLink]="['/busqueda-binaria']" class="btn custom-list-btn text-start"><strong><i class="bi bi-caret-right-fill" ></i>Busqueda Binaria</strong></button>
         </div>
     </div>
 </div>

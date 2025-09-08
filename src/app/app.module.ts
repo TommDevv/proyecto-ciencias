@@ -10,6 +10,8 @@ import { InicioComponent } from './inicio/inicio.component';
 import { BusquedaInternaLayoutComponent } from './busqueda-interna/busqueda-interna-layout/busqueda-interna-layout.component';
 import { BusquedaLinealComponent } from './busqueda-interna/busqueda-lineal/busqueda-lineal.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { BusquedaBinariaComponent } from './busqueda-interna/busqueda-binaria/busqueda-binaria.component';
+import { HashComponent } from './busqueda-interna/hash/hash.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     AppHeaderComponent,
     InicioComponent,
     BusquedaInternaLayoutComponent,
-    BusquedaLinealComponent
+    BusquedaLinealComponent,
+    BusquedaBinariaComponent,
+    HashComponent
   ],
   imports: [
     BrowserModule,

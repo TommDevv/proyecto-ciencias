@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-busqueda-lineal',
-  templateUrl: './busqueda-lineal.component.html',
-  styleUrls: ['./busqueda-lineal.component.css']
+  selector: 'app-hash',
+  templateUrl: './hash.component.html',
+  styleUrls: ['./hash.component.css']
 })
-
-export class BusquedaLinealComponent {
-
-  cantreg: number;
+export class HashComponent {
+   cantreg: number;
   ingreso: string ;
   retiro: string ;
   busqueda: string;
@@ -114,4 +112,46 @@ export class BusquedaLinealComponent {
     this.eliminarFinalizado = false;
   }
 
+  hashMod(clave: number, tamaño: number): number{
+    return (clave%tamaño) + 1;
+  }
+
+  hashCuad(num: number): number{
+    const str = String(Math.abs((num**2)));
+    const len = str.length;
+
+    if (len < 2) {
+      return Number(str);
+    }
+
+    if (len % 2 === 0) {
+      const mid = len / 2;
+      return Number(str[mid - 1] + str[mid]);
+    } else {
+
+      const mid = Math.floor(len / 2);
+      return Number(str[mid - 1] + str[mid]) + 1;
+    }
+  }
+
+  hashTrunc(clave: number){
+    const str = String(Math.abs(clave));
+    const len = str.length;
+
+    if (len < 2) {
+      return Number(str);
+    }
+
+    return Number(str[0] + str[str.length]) + 1;
+  }
+
+  hashPleg(clave: number){
+    const str = String(Math.abs(clave));
+    const mitad = Math.floor(str.length/2);
+    
+    const primera = str.slice(0, mitad);
+    const segunda = str.slice(mitad);
+
+    return Number(primera) + Number(segunda) + 1;
+  }
 }
