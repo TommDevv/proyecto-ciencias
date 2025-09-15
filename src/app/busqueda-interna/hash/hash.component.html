@@ -19,27 +19,27 @@
                     </select>
                 </div>
                 <div class="col-3 pt-4" *ngIf="!mostrarEstructura">
-                    <button class="btn btn-info" type="button" (click)="generarEstructura()">Generar Estructura</button>
+                    <button class="btn btn-dark" type="button" (click)="generarEstructura()">Generar Estructura</button>
                 </div>
                 <div class="col-4" *ngIf="mostrarEstructura">
                     <label class="form-label mb-2" for="cantidad-n">Ingresar un valor a la estructura (el tamaño de las claves debe ser de 4 dígitos)</label>
                     <div class="input-group" id="cantidad-n">
                         <input [(ngModel)]="ingreso" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
-                        <button class="btn btn-info" type="button" (click)="anadir()">Ingresar</button>
+                        <button class="btn btn-dark" type="button" (click)="anadir()">Ingresar</button>
                     </div>
                 </div>
                 <div class="col-3" *ngIf="mostrarEstructura">
                     <label class="form-label mb-4" for="cantidad-n">Buscar valor <br></label>
                     <div class="input-group" id="cantidad-n">
                         <input [(ngModel)]="busqueda" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
-                        <button class="btn btn-info" type="button" (click)="buscar()">Buscar</button>
+                        <button class="btn btn-dark" type="button" (click)="buscar()">Buscar</button>
                     </div>
                 </div>
                 <div class="col-3" *ngIf="mostrarEstructura">
                     <label class="form-label mb-4" for="cantidad-n">Eliminar valor <br></label>
                     <div class="input-group" id="cantidad-n">
                         <input [(ngModel)]="retiro" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
-                        <button class="btn btn-info" type="button" (click)="eliminar()">Eliminar</button>
+                        <button class="btn btn-dark" type="button" (click)="eliminar()">Eliminar</button>
                     </div>
                 </div>
             </div>

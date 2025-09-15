@@ -5,32 +5,32 @@
 
 .navbar {
   font-size: 1.5rem;
-  background-color: rgba(34, 34, 45, 0.95);
-  color: #16fffb;          /* color personalizado */
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #000000;
 }
 
 .navbar .nav-link,
 .navbar .dropdown-menu,
 .navbar .dropdown-item {
-  color: #16fffb;  
+  color: #000000;  
 }
 
 .navbar .dropdown-menu,
 .navbar .dropdown-item {
-  color: #16fffb;  
-  background-color: rgba(34, 34, 45, 0.95);
+  color: #000000;  
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .navbar .nav-link:disabled,
 .navbar .dropdown-menu:disabled,
 .navbar .dropdown-item:disabled {
-  color: #16fffb69;  
+  color: #808d8d69;  
 }
 
 .navbar .nav-link:hover,
 .navbar .dropdown-item:hover {
-  color: #16fffb;
-  background-color: rgba(50, 50, 68, 0.95);
+  color: #000000;
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .dropdown-menu{
