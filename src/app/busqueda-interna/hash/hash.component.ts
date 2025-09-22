@@ -6,204 +6,289 @@ import { Component } from '@angular/core';
   styleUrls: ['./hash.component.css']
 })
 export class HashComponent {
-   cantreg: number;
-  ingreso: string ;
-  retiro: string ;
+  cantreg: number;
+  ingreso: string;
+  retiro: string;
   busqueda: string;
   resultado: string;
   values: string[];
+  subtablas: string[][]; // Para anidamiento y encadenamiento
   mostrarEstructura: boolean;
-  contador:number;
+  contador: number;
   anadirFinalizado: boolean;
   buscarFinalizado: boolean;
   eliminarFinalizado: boolean;
   funcionHash: string;
+  colision: string;
 
-  constructor(){
+  constructor() {
     this.cantreg = 0;
     this.ingreso = '';
     this.retiro = '';
     this.busqueda = '';
-    this.values = []
+    this.values = [];
+    this.subtablas = [];
     this.mostrarEstructura = false;
     this.contador = -1;
-    this.anadirFinalizado = false
+    this.anadirFinalizado = false;
     this.buscarFinalizado = false;
     this.eliminarFinalizado = false;
     this.resultado = '';
     this.funcionHash = '';
+    this.colision = '';
   }
 
-  generarEstructura(): void{
-    const n = this.cantreg;
-    for(let i: number = 0; i < n; i++){
-      this.values.push('');
+  generarEstructura(): void {
+    if (!this.funcionHash || !this.colision) {
+      alert('Debe seleccionar una función hash y un método de colisión');
+      return;
     }
 
-    console.log(this.values)
-    this.mostrarEstructura= true
+    this.values = Array(this.cantreg).fill('');
+    this.subtablas = Array(this.cantreg).fill(null).map(() => []);
+    this.mostrarEstructura = true;
   }
 
-  anadir(): void{
+  anadir(): void {
     this.limpiar();
-    if(this.ingreso.length != 4){
-      alert('Tamaño de la clave incorrecto')
-      return
-    }
-    var index = 0;
 
-    switch(this.funcionHash){
-      case 'mod':
-        index = this.hashMod(Number(this.ingreso), this.values.length);
-        break;
-      case 'cuadrado':
-        index = this.hashCuad(Number(this.ingreso));
-        break;
-      case 'truncamiento':
-        index = this.hashTrunc(Number(this.ingreso));
-        break;
-      case 'plegamiento':
-        index = this.hashPleg(Number(this.ingreso));
-        break;
-      default:
-        alert('Seleccione una función hash')
-        return
+    if (this.ingreso.length !== 4) {
+      alert('Tamaño de la clave incorrecto (debe ser de 4 dígitos)');
+      return;
     }
 
-    if (index >= this.values.length){
-      index = index - this.values.length;
+    let index = this.calcularHash(this.ingreso);
+
+    if (this.colision === 'anidamiento') {
+      this.subtablas[index].push(this.ingreso);
+      this.resultado = `Colisión en índice ${index}. Insertado en subestructura: [${this.subtablas[index].join(', ')}]`;
+    }
+    else if (this.colision === 'encadenamiento') {
+      if (this.values[index] === '') {
+        this.values[index] = this.ingreso;
+        this.resultado = `Valor ${this.ingreso} insertado en índice ${index}`;
+      } else {
+        this.subtablas[index].push(this.ingreso);
+        this.resultado = ` Colisión en índice ${index}. Encadenado → [${this.values[index]}, ${this.subtablas[index].join(', ')}]`;
+      }
+    }
+    else {
+      let originalIndex = index;
+      let i = 1;
+      while (this.values[index] !== '') {
+        if (this.colision === 'lineal') {
+          index = (originalIndex + i) % this.values.length;
+        } else if (this.colision === 'cuadrado') {
+          index = (originalIndex + i * i) % this.values.length;
+        }
+        i++;
+        if (i > this.values.length) {
+          alert('Tabla llena. No se pudo insertar.');
+          return;
+        }
+      }
+      this.values[index] = this.ingreso;
+      this.resultado = ` Colisión en índice ${originalIndex}. Insertado en índice ${index}`;
     }
 
-    this.values[index] = this.ingreso;
-    this.resultado = `Valor ${this.values[index]} ingresado en la posición ${index}`;
     this.anadirFinalizado = true;
   }
 
-  buscar(): void{
+  buscar(): void {
     this.limpiar();
 
-    var index = 0;
+    let index = this.calcularHash(this.busqueda);
 
-    switch(this.funcionHash){
-      case 'mod':
-        index = this.hashMod(Number(this.busqueda), this.values.length);
-        break;
-      case 'cuadrado':
-        index = this.hashCuad(Number(this.busqueda));
-        break;
-      case 'truncamiento':
-        index = this.hashTrunc(Number(this.busqueda));
-        break;
-      case 'plegamiento':
-        index = this.hashPleg(Number(this.busqueda));
-        break;
-      default:
-        alert('Seleccione una función hash')
-        return
+    if (this.colision === 'anidamiento') {
+      const found = this.subtablas[index].includes(this.busqueda);
+      this.resultado = found
+        ? `Valor ${this.busqueda} encontrado en subestructura del índice ${index}`
+        : 'Valor no encontrado';
+    }
+    else if (this.colision === 'encadenamiento') {
+      if (this.values[index] === this.busqueda) {
+        this.resultado = `Valor ${this.busqueda} encontrado en índice ${index}`;
+      } else if (this.subtablas[index].includes(this.busqueda)) {
+        this.resultado = `Valor ${this.busqueda} encontrado en encadenamiento de índice ${index}`;
+      } else {
+        this.resultado = 'Valor no encontrado';
+      }
+    }
+    else {
+      let originalIndex = index;
+      let i = 0;
+      while (i < this.values.length) {
+        let currentIndex = index;
+        if (this.values[currentIndex] === this.busqueda) {
+          this.resultado = `Valor ${this.busqueda} encontrado en índice ${currentIndex}`;
+          this.buscarFinalizado = true;
+          return;
+        }
+        if (this.colision === 'lineal') {
+          index = (originalIndex + ++i) % this.values.length;
+        } else if (this.colision === 'cuadrado') {
+          index = (originalIndex + i * i) % this.values.length;
+          i++;
+        }
+      }
+      this.resultado = 'Valor no encontrado';
     }
 
-    if (index >= this.values.length){
-      index = index - this.values.length;
-    }
-
-
-    if(this.values[index] === ''){
-      this.resultado = ' Valor no encontrado en la lista'
-      this.buscarFinalizado = true;
-      return;
-    } else {
-      this.resultado = `Valor ${this.values[index]} encontrado en la posición ${index}`;
-      this.buscarFinalizado = true;
-      return;
-    }
-
+    this.buscarFinalizado = true;
   }
 
-  eliminar(): void{
+  eliminar(): void {
     this.limpiar();
-    
-    var index = 0;
 
-    switch(this.funcionHash){
-      case 'mod':
-        index = this.hashMod(Number(this.retiro), this.values.length);
-        break;
-      case 'cuadrado':
-        index = this.hashCuad(Number(this.retiro));
-        break;
-      case 'truncamiento':
-        index = this.hashTrunc(Number(this.retiro));
-        break;
-      case 'plegamiento':
-        index = this.hashPleg(Number(this.retiro));
-        break;
-      default:
-        alert('Seleccione una función hash')
-        return
+    let index = this.calcularHash(this.retiro);
+
+    if (this.colision === 'anidamiento') {
+      const idx = this.subtablas[index].indexOf(this.retiro);
+      if (idx !== -1) {
+        this.subtablas[index].splice(idx, 1);
+        this.resultado = `Valor ${this.retiro} eliminado de subestructura en índice ${index}`;
+      } else {
+        this.resultado = 'Valor no encontrado';
+      }
+    }
+    else if (this.colision === 'encadenamiento') {
+      if (this.values[index] === this.retiro) {
+        this.values[index] = '';
+        this.resultado = `Valor ${this.retiro} eliminado del índice ${index}`;
+      } else {
+        const idx = this.subtablas[index].indexOf(this.retiro);
+        if (idx !== -1) {
+          this.subtablas[index].splice(idx, 1);
+          this.resultado = `Valor ${this.retiro} eliminado del encadenamiento en índice ${index}`;
+        } else {
+          this.resultado = 'Valor no encontrado';
+        }
+      }
+    }
+    else {
+      let originalIndex = index;
+      let i = 0;
+      while (i < this.values.length) {
+        let currentIndex = index;
+        if (this.values[currentIndex] === this.retiro) {
+          this.values[currentIndex] = '';
+          this.resultado = `Valor ${this.retiro} eliminado del índice ${currentIndex}`;
+          this.eliminarFinalizado = true;
+          return;
+        }
+        if (this.colision === 'lineal') {
+          index = (originalIndex + ++i) % this.values.length;
+        } else if (this.colision === 'cuadrado') {
+          index = (originalIndex + i * i) % this.values.length;
+          i++;
+        }
+      }
+      this.resultado = 'Valor no encontrado';
     }
 
-    if (index >= this.values.length){
-      index = index - this.values.length;
-    }
-
-    if(this.values[index] === ''){
-      this.resultado = ' Valor no encontrado en la lista'
-      this.eliminarFinalizado = true;
-      return;
-    } else {
-      this.values[index] = '';
-      this.resultado = `Valor ${this.retiro} eliminado en la posición ${index}`;
-      this.eliminarFinalizado = true;
-      return;
-    }
+    this.eliminarFinalizado = true;
   }
 
-  limpiar(){
+  limpiar(): void {
     this.anadirFinalizado = false;
     this.buscarFinalizado = false;
     this.eliminarFinalizado = false;
+    this.resultado = '';
   }
 
-  hashMod(clave: number, tamaño: number): number{
-    return (clave%tamaño) + 1;
+  calcularHash(valor: string): number {
+    const clave = Number(valor);
+    let index = 0;
+
+    switch (this.funcionHash) {
+      case 'mod':
+        index = clave % this.cantreg;
+        break;
+      case 'cuadrado':
+        index = this.hashCuad(clave);
+        break;
+      case 'truncamiento':
+        index = this.hashTrunc(clave);
+        break;
+      case 'plegamiento':
+        index = this.hashPleg(clave);
+        break;
+      default:
+        alert('Función hash no válida');
+    }
+
+    return index % this.cantreg;
   }
 
-  hashCuad(num: number): number{
-    const str = String(Math.abs((num**2)));
+  hashCuad(num: number): number {
+    const str = String(Math.abs((num ** 2)));
     const len = str.length;
-
-    if (len < 2) {
-      return Number(str);
-    }
-
-    if (len % 2 === 0) {
-      const mid = len / 2;
-      return Number(str[mid - 1] + str[mid]);
-    } else {
-
-      const mid = Math.floor(len / 2);
-      return Number(str[mid - 1] + str[mid]) + 1;
-    }
+    const mid = Math.floor(len / 2);
+    return Number(str[mid - 1] + str[mid]) || 0;
   }
 
-  hashTrunc(clave: number){
-    const str = String(Math.abs(clave));
-    const len = str.length;
-
-    if (len < 2) {
-      return Number(str);
-    }
-
-    return Number(str[0] + str[str.length]) + 1;
+  hashTrunc(clave: number): number {
+    const str = String(clave);
+    return Number(str.slice(0, 2)) || 0;
   }
 
-  hashPleg(clave: number){
-    const str = String(Math.abs(clave));
-    const mitad = Math.floor(str.length/2);
-    
-    const primera = str.slice(0, mitad);
-    const segunda = str.slice(mitad);
+  hashPleg(clave: number): number {
+    const str = String(clave);
+    const mitad = Math.floor(str.length / 2);
+    const p1 = Number(str.slice(0, mitad));
+    const p2 = Number(str.slice(mitad));
+    return (p1 + p2) || 0;
+  }
 
-    return Number(primera) + Number(segunda) + 1;
+  exportarEstructura(): void {
+    const estructura = {
+      tipoEstructura: 'hash',
+      funcionHash: this.funcionHash,
+      metodoColision: this.colision,
+      tablaPrincipal: this.values,
+      subtablas: this.subtablas
+    };
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estructura));
+    const anchor = document.createElement('a');
+    anchor.setAttribute("href", dataStr);
+    anchor.setAttribute("download", "estructura-hash.json");
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+  }
+
+  importarEstructura(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string);
+
+        if (data.tipoEstructura !== 'hash') {
+          alert('El archivo no corresponde a una estructura hash');
+          return;
+        }
+
+        if (data.metodoColision !== this.colision) {
+          alert(`El método de colisión del archivo (${data.metodoColision}) no coincide con el seleccionado (${this.colision})`);
+          return;
+        }
+
+        this.values = data.tablaPrincipal;
+        this.subtablas = data.subtablas || Array(this.values.length).fill([]);
+        this.cantreg = this.values.length;
+        this.mostrarEstructura = true;
+        this.resultado = 'Estructura importada correctamente';
+      } catch (e) {
+        alert('Error al leer el archivo JSON');
+      }
+    };
+
+    reader.readAsText(file);
   }
 }

@@ -1,65 +1,83 @@
 <div class="container justify-content-center">
-    <h1 class="my-3 text-center courier-prime-bold">Funciones Hash</h1>
-        <div class="row my-2">
-            <div class="row">
-                <div class="col-3" *ngIf="!mostrarEstructura">
-                    <label class="form-label mb-2" for="cantidad-n">Cantidad de datos (n) a almacenar</label>
-                    <div class="input-group" id="cantidad-n">
-                        <input [(ngModel)]="cantreg" class="form-control form-control-custom" type="number" min="0" oninput="this.value = Math.abs(this.value)">
-                    </div>
-                </div>
-                <div class="col-3" *ngIf="!mostrarEstructura">
-                    <label class="form-label mb-2" for="cantidad-n">Escoja una funcion Hash</label>
-                    <select class="form-select form-select-custom" [(ngModel)]="funcionHash" required>
-                        <option value="" disabled selected>Seleccione una opcion</option>
-                        <option value="mod">Hash Modulo</option>
-                        <option value="cuadrado">Hash Cuadrado</option>
-                        <option value="truncamiento">Hash Truncamiento</option>
-                        <option value="plegamiento">Hash Plegamiento</option>
-                    </select>
-                </div>
-                <div class="col-3 pt-4" *ngIf="!mostrarEstructura">
-                    <button class="btn btn-dark" type="button" (click)="generarEstructura()">Generar Estructura</button>
-                </div>
-                <div class="col-4" *ngIf="mostrarEstructura">
-                    <label class="form-label mb-2" for="cantidad-n">Ingresar un valor a la estructura (el tamaño de las claves debe ser de 4 dígitos)</label>
-                    <div class="input-group" id="cantidad-n">
-                        <input [(ngModel)]="ingreso" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
-                        <button class="btn btn-dark" type="button" (click)="anadir()">Ingresar</button>
-                    </div>
-                </div>
-                <div class="col-3" *ngIf="mostrarEstructura">
-                    <label class="form-label mb-4" for="cantidad-n">Buscar valor <br></label>
-                    <div class="input-group" id="cantidad-n">
-                        <input [(ngModel)]="busqueda" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
-                        <button class="btn btn-dark" type="button" (click)="buscar()">Buscar</button>
-                    </div>
-                </div>
-                <div class="col-3" *ngIf="mostrarEstructura">
-                    <label class="form-label mb-4" for="cantidad-n">Eliminar valor <br></label>
-                    <div class="input-group" id="cantidad-n">
-                        <input [(ngModel)]="retiro" class="form-control form-control-custom" type="text" placeholder="Escriba el valor a ingresar...">
-                        <button class="btn btn-dark" type="button" (click)="eliminar()">Eliminar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row my-4" style="padding-inline: 400px;" *ngIf="mostrarEstructura">
-                <h3 class="mt-4 text-start courier-prime-bold">Estructura Generada:</h3>
-                <h4 class="my-3" *ngIf="anadirFinalizado || eliminarFinalizado || buscarFinalizado">{{resultado}}</h4>
-                <table class="table table-dark table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Posicion</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let value of values; let i = index" [class.table-primary]="i === contador">
-                            <td>{{i}}</td>
-                            <td>{{value}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <h1 class="my-3 text-center courier-prime-bold">Funciones Hash</h1>
+
+  <div class="row my-2">
+    <div class="row">
+      <div class="col-3" *ngIf="!mostrarEstructura">
+        <label class="form-label mb-2">Cantidad de datos</label>
+        <input [(ngModel)]="cantreg" class="form-control" type="number" min="1">
+      </div>
+
+      <div class="col-3" *ngIf="!mostrarEstructura">
+        <label class="form-label mb-2">Función Hash</label>
+        <select class="form-select" [(ngModel)]="funcionHash">
+          <option value="" disabled selected>Seleccione</option>
+          <option value="mod">Hash Módulo</option>
+          <option value="cuadrado">Hash Cuadrado</option>
+          <option value="truncamiento">Hash Truncamiento</option>
+          <option value="plegamiento">Hash Plegamiento</option>
+        </select>
+      </div>
+
+      <div class="col-3" *ngIf="!mostrarEstructura">
+        <label class="form-label mb-2">Método de Colisión</label>
+        <select class="form-select" [(ngModel)]="colision">
+          <option value="" disabled selected>Seleccione</option>
+          <option value="lineal">Lineal</option>
+          <option value="cuadrado">Cuadrática</option>
+          <option value="encadenamiento">Encadenamiento</option>
+          <option value="anidamiento">Anidamiento</option>
+        </select>
+      </div>
+
+      <div class="col-3 pt-4" *ngIf="!mostrarEstructura">
+        <button class="btn btn-dark" (click)="generarEstructura()">Generar Estructura</button>
+      </div>
+
+      <div class="col-12 mt-3" *ngIf="mostrarEstructura">
+        <button class="btn btn-success me-2" (click)="exportarEstructura()">Exportar JSON</button>
+        <label class="btn btn-secondary">
+          Importar JSON
+          <input type="file" (change)="importarEstructura($event)" hidden accept=".json">
+        </label>
+      </div>
+
+      <div class="col-4 mt-3" *ngIf="mostrarEstructura">
+        <input [(ngModel)]="ingreso" class="form-control" placeholder="Valor (4 dígitos)">
+        <button class="btn btn-dark mt-2" (click)="anadir()">Ingresar</button>
+      </div>
+
+      <div class="col-4 mt-3" *ngIf="mostrarEstructura">
+        <input [(ngModel)]="busqueda" class="form-control" placeholder="Buscar valor">
+        <button class="btn btn-dark mt-2" (click)="buscar()">Buscar</button>
+      </div>
+
+      <div class="col-4 mt-3" *ngIf="mostrarEstructura">
+        <input [(ngModel)]="retiro" class="form-control" placeholder="Eliminar valor">
+        <button class="btn btn-dark mt-2" (click)="eliminar()">Eliminar</button>
+      </div>
+    </div>
+
+    <div class="row mt-4" *ngIf="mostrarEstructura">
+      <h4 *ngIf="anadirFinalizado || eliminarFinalizado || buscarFinalizado">{{ resultado }}</h4>
+      <table class="table table-dark table-bordered">
+        <thead>
+        <tr>
+          <th>Índice</th>
+          <th>Valor</th>
+          <th *ngIf="colision === 'encadenamiento'">Encadenamiento</th>
+          <th *ngIf="colision === 'anidamiento'">Subestructura</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let val of values; let i = index">
+          <td>{{ i }}</td>
+          <td>{{ val }}</td>
+          <td *ngIf="colision === 'encadenamiento'">{{ subtablas[i].join(' → ') }}</td>
+          <td *ngIf="colision === 'anidamiento'">{{ subtablas[i].join(', ') }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

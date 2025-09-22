@@ -19,13 +19,13 @@ export class BusquedaBinariaComponent {
   eliminarFinalizado: boolean;
   tamanoClave: number;
 
-  // Historial de divisiones para pintar tablas por cada paso
   tablasDivision: Array<{
-    low: number; mid: number; high: number;
+    low: number;
+    mid: number;
+    high: number;
     datos: Array<{ valor: string; index: number }>;
   }>;
 
-  // Acción actual para rotular la evolución
   accionActual: 'busqueda' | 'eliminacion' = 'busqueda';
 
   constructor() {
@@ -57,6 +57,7 @@ export class BusquedaBinariaComponent {
       alert('Tamaño de la clave incorrecto');
       return;
     }
+
     let i = 0;
     let flag = true;
     while (flag && i < this.values.length) {
@@ -68,7 +69,16 @@ export class BusquedaBinariaComponent {
         i++;
       }
     }
-    if (flag) this.resultado = 'No hay espacio disponible';
+
+    if (flag) {
+      this.resultado = 'No hay espacio disponible';
+    } else {
+      const valoresNoVacios = this.values.filter(v => v !== '');
+      valoresNoVacios.sort(); // alfabético
+      const vacios = new Array(this.values.length - valoresNoVacios.length).fill('');
+      this.values = [...valoresNoVacios, ...vacios];
+    }
+
     this.contador = i;
     this.anadirFinalizado = true;
   }
@@ -85,7 +95,7 @@ export class BusquedaBinariaComponent {
       return;
     }
 
-    const base: Array<{ valor: string; index: number }> = this.values
+    const base = this.values
       .map((v, i) => ({ valor: v, index: i }))
       .filter(x => x.valor !== '');
 
@@ -103,10 +113,10 @@ export class BusquedaBinariaComponent {
 
     while (low <= high) {
       const mid = Math.floor((low + high) / 2);
-
-      // Snapshot del rango actual
       this.tablasDivision.push({
-        low, mid, high,
+        low,
+        mid,
+        high,
         datos: arr.slice(low, high + 1)
       });
 
@@ -122,11 +132,9 @@ export class BusquedaBinariaComponent {
       }
     }
 
-    if (foundAt) {
-      this.resultado = `Valor ${foundAt.valor} encontrado en la posición original ${foundAt.index}`;
-    } else {
-      this.resultado = 'Valor no encontrado';
-    }
+    this.resultado = foundAt
+      ? `Valor ${foundAt.valor} encontrado en la posición original ${foundAt.index}`
+      : 'Valor no encontrado';
 
     this.buscarFinalizado = true;
   }
@@ -143,7 +151,7 @@ export class BusquedaBinariaComponent {
       return;
     }
 
-    const base: Array<{ valor: string; index: number }> = this.values
+    const base = this.values
       .map((v, i) => ({ valor: v, index: i }))
       .filter(x => x.valor !== '');
 
@@ -159,13 +167,13 @@ export class BusquedaBinariaComponent {
     let high = arr.length - 1;
     let foundAt: { valor: string; index: number } | null = null;
 
-    // Búsqueda binaria para encontrar el valor a eliminar
     while (low <= high) {
       const mid = Math.floor((low + high) / 2);
 
-      // Snapshot del rango actual
       this.tablasDivision.push({
-        low, mid, high,
+        low,
+        mid,
+        high,
         datos: arr.slice(low, high + 1)
       });
 
@@ -187,12 +195,16 @@ export class BusquedaBinariaComponent {
       return;
     }
 
-    // Eliminar en la posición original y compactar a la izquierda
     const idx = foundAt.index;
     for (let k = idx; k < this.values.length - 1; k++) {
       this.values[k] = this.values[k + 1];
     }
     this.values[this.values.length - 1] = '';
+
+    const valoresNoVacios = this.values.filter(v => v !== '');
+    valoresNoVacios.sort();
+    const vacios = new Array(this.values.length - valoresNoVacios.length).fill('');
+    this.values = [...valoresNoVacios, ...vacios];
 
     this.resultado = `Valor ${foundAt.valor} eliminado de la posición original ${idx} y lista reorganizada`;
     this.eliminarFinalizado = true;
@@ -203,5 +215,56 @@ export class BusquedaBinariaComponent {
     this.buscarFinalizado = false;
     this.eliminarFinalizado = false;
     this.resultado = '';
+  }
+
+  exportarEstructura(): void {
+    const estructura = {
+      tipoBusqueda: 'binaria',
+      values: this.values,
+      cantreg: this.cantreg,
+      tamanoClave: this.tamanoClave
+    };
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estructura));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "estructura-binaria.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  }
+
+  importarEstructura(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string);
+
+        if (data.tipoBusqueda !== 'binaria') {
+          alert(`Estructura incompatible. Se esperaba tipoBusqueda 'binaria' y se recibió '${data.tipoBusqueda}'`);
+          return;
+        }
+
+        if (!Array.isArray(data.values)) {
+          alert('Estructura inválida. El campo "values" debe ser un arreglo.');
+          return;
+        }
+
+        this.values = data.values;
+        this.cantreg = data.cantreg || data.values.length;
+        this.tamanoClave = data.tamanoClave || 1;
+        this.mostrarEstructura = true;
+        this.resultado = 'Estructura importada correctamente';
+      } catch (error) {
+        alert('Error al leer el archivo JSON.');
+      }
+    };
+
+    reader.readAsText(file);
   }
 }
