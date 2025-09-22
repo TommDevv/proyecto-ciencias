@@ -12,6 +12,8 @@ import { BusquedaLinealComponent } from './busqueda-interna/busqueda-lineal/busq
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BusquedaBinariaComponent } from './busqueda-interna/busqueda-binaria/busqueda-binaria.component';
 import { HashComponent } from './busqueda-interna/hash/hash.component';
+import { ArbolDigitalComponent } from './busqueda-interna/arbol-digital/arbol-digital.component';
+import { NodoComponent } from './nodo/nodo.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { HashComponent } from './busqueda-interna/hash/hash.component';
     BusquedaInternaLayoutComponent,
     BusquedaLinealComponent,
     BusquedaBinariaComponent,
-    HashComponent
+    HashComponent,
+    ArbolDigitalComponent,
+    NodoComponent
   ],
   imports: [
     BrowserModule,

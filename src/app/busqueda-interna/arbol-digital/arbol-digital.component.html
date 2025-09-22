@@ -1,0 +1,54 @@
+<div class="container justify-content-center">
+  <h1 class="my-3 text-center courier-prime-bold">Árbol Digital (Trie)</h1>
+
+  <div class="row my-2">
+    <div class="col-4">
+      <button class="btn btn-dark w-100 mb-3" (click)="generarEstructura()">Generar Estructura</button>
+    </div>
+
+    <div class="col-4">
+      <input type="file" accept=".json" (change)="importarJSON($event)" class="form-control">
+    </div>
+
+    <div class="col-4">
+      <button class="btn btn-primary w-100 mb-3" (click)="exportarJSON()">Exportar JSON</button>
+    </div>
+  </div>
+
+  <div *ngIf="mostrarArbol">
+    <div class="row my-3">
+      <div class="col-4">
+        <label>Insertar clave</label>
+        <div class="input-group">
+          <input [(ngModel)]="ingreso" class="form-control" type="text" placeholder="Ej: 1234">
+          <button class="btn btn-success" (click)="anadir()">Añadir</button>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <label>Buscar clave</label>
+        <div class="input-group">
+          <input [(ngModel)]="busqueda" class="form-control" type="text" placeholder="Ej: 1234">
+          <button class="btn btn-info" (click)="buscar()">Buscar</button>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <label>Eliminar clave</label>
+        <div class="input-group">
+          <input [(ngModel)]="retiro" class="form-control" type="text" placeholder="Ej: 1234">
+          <button class="btn btn-danger" (click)="eliminar()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <h4 class="text-center my-3">{{ resultado }}</h4>
+
+    <div class="mt-4">
+      <h5>Visualización del Árbol:</h5>
+      <div class="tree-container">
+        <app-nodo [nodo]="raiz"></app-nodo>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<div class="nodo">
+  <div class="nodo-box">
+    {{ nodo?.valor === null ? 'ROOT' : nodo?.valor }}
+    <span *ngIf="nodo?.finDePalabra">*</span>
+  </div>
+
+  <div class="nodo-hijos" *ngIf="nodo?.hijos && objectKeys(nodo.hijos).length > 0">
+    <app-nodo *ngFor="let key of objectKeys(nodo.hijos)" [nodo]="nodo.hijos[key]"></app-nodo>
+  </div>
+</div>

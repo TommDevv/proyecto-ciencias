@@ -73,7 +73,11 @@
         <tr *ngFor="let val of values; let i = index">
           <td>{{ i }}</td>
           <td>{{ val }}</td>
-          <td *ngIf="colision === 'encadenamiento'">{{ subtablas[i].join(' → ') }}</td>
+          <td *ngIf="colision === 'encadenamiento'">
+            <ng-container *ngIf="subtablas[i]?.length! > 0">
+              <span class="badge bg-info text-dark me-1" *ngFor="let val of subtablas[i]">{{ val }}</span>
+            </ng-container>
+          </td>
           <td *ngIf="colision === 'anidamiento'">{{ subtablas[i].join(', ') }}</td>
         </tr>
         </tbody>
