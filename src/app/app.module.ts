@@ -14,6 +14,7 @@ import { BusquedaBinariaComponent } from './busqueda-interna/busqueda-binaria/bu
 import { HashComponent } from './busqueda-interna/hash/hash.component';
 import { ArbolDigitalComponent } from './busqueda-interna/arbol-digital/arbol-digital.component';
 import { NodoComponent } from './nodo/nodo.component';
+import { ResiduosComponent } from './busqueda-interna/residuos/residuos.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { NodoComponent } from './nodo/nodo.component';
     BusquedaBinariaComponent,
     HashComponent,
     ArbolDigitalComponent,
-    NodoComponent
+    NodoComponent,
+    ResiduosComponent
   ],
   imports: [
     BrowserModule,

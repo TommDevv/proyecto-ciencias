@@ -7,6 +7,7 @@ import { BusquedaLinealComponent } from './busqueda-interna/busqueda-lineal/busq
 import { BusquedaBinariaComponent } from './busqueda-interna/busqueda-binaria/busqueda-binaria.component';
 import { HashComponent } from './busqueda-interna/hash/hash.component';
 import { ArbolDigitalComponent } from './busqueda-interna/arbol-digital/arbol-digital.component';
+import { ResiduosComponent } from './busqueda-interna/residuos/residuos.component';
 
 const routes: Routes = [
    {
@@ -21,7 +22,8 @@ const routes: Routes = [
       {path: 'busqueda-lineal', component: BusquedaLinealComponent},
       {path: 'busqueda-binaria', component: BusquedaBinariaComponent},
       {path: 'hash', component: HashComponent},
-      {path: 'arbol-digital', component: ArbolDigitalComponent}
+      {path: 'arbol-digital', component: ArbolDigitalComponent},
+      {path: 'residuos', component: ResiduosComponent}
     ]
   }
 
