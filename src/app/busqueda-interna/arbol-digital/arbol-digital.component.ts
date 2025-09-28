@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { DataSet, Network } from 'vis-network/standalone';
 
 interface NodoArbol {
-  valor: string | null;
-  finDePalabra: boolean;
-  hijos: { [clave: string]: NodoArbol };
+  letra: string;
+  binario: string;
+  izquierdo: NodoArbol | null;
+  derecho: NodoArbol | null;
 }
 
 @Component({
@@ -12,115 +13,241 @@ interface NodoArbol {
   templateUrl: './arbol-digital.component.html',
   styleUrls: ['./arbol-digital.component.css']
 })
-
-
 export class ArbolDigitalComponent {
-   raiz: NodoArbol;
+  raiz: NodoArbol | null = null;
   ingreso: string = '';
   busqueda: string = '';
   retiro: string = '';
   resultado: string = '';
   mostrarArbol: boolean = false;
 
-  constructor() {
-    this.raiz = this.crearNodo(null);
+  @ViewChild('networkContainer', { static: false }) networkContainer!: ElementRef;
+  network!: Network;
+
+  // Convierte una letra en binario de 5 bits
+  convertirLetraABinario(letra: string): string {
+    const posicion = letra.toUpperCase().charCodeAt(0) - 64; // A=1
+    return posicion.toString(2).padStart(5, '0');
   }
 
-  crearNodo(valor: string | null): NodoArbol {
-    return {
-      valor,
-      finDePalabra: false,
-      hijos: {}
-    };
+  validarTexto(texto: string): boolean {
+    return /^[A-Za-z]$/.test(texto);
   }
 
   generarEstructura() {
-    this.raiz = this.crearNodo(null);
+    this.raiz = null;
     this.mostrarArbol = true;
     this.resultado = 'Estructura inicializada';
+    setTimeout(() => this.actualizarVisualizacion(), 0);
   }
 
-  anadir(): void {
+  crearNodo(letra: string, binario: string): NodoArbol {
+    return { letra, binario, izquierdo: null, derecho: null };
+  }
+
+  // Inserta una letra siguiendo los bits
+  insertar(letra: string, binario: string) {
+    if (!this.raiz) {
+      this.raiz = this.crearNodo(letra, binario);
+      return;
+    }
+
+    let actual = this.raiz;
+    let i = 0;
+    while (i < binario.length) {
+      if (binario[i] === '0') {
+        if (!actual.izquierdo) {
+          actual.izquierdo = this.crearNodo(letra, binario);
+          return;
+        } else {
+          actual = actual.izquierdo;
+          i++;
+        }
+      } else {
+        if (!actual.derecho) {
+          actual.derecho = this.crearNodo(letra, binario);
+          return;
+        } else {
+          actual = actual.derecho;
+          i++;
+        }
+      }
+    }
+  }
+
+  // Añadir desde interfaz
+  anadir() {
     if (!this.ingreso) {
-      alert('Ingrese una clave');
+      alert('Ingrese un carácter');
+      return;
+    }
+    if (!this.validarTexto(this.ingreso)) {
+      alert('Solo se permite un carácter A-Z');
       return;
     }
 
-    let nodoActual = this.raiz;
-    for (const char of this.ingreso) {
-      if (!nodoActual.hijos[char]) {
-        nodoActual.hijos[char] = this.crearNodo(char);
-      }
-      nodoActual = nodoActual.hijos[char];
-    }
-    nodoActual.finDePalabra = true;
-    this.resultado = `Clave '${this.ingreso}' añadida correctamente`;
+    const letra = this.ingreso.toUpperCase();
+    const binario = this.convertirLetraABinario(letra);
+    this.insertar(letra, binario);
+
+    this.resultado = `Carácter '${letra}' añadido correctamente`;
     this.ingreso = '';
+    this.actualizarVisualizacion();
   }
 
-  buscar(): void {
-    if (!this.busqueda) {
-      alert('Ingrese una clave a buscar');
-      return;
-    }
-
-    let nodoActual = this.raiz;
-    for (const char of this.busqueda) {
-      if (!nodoActual.hijos[char]) {
-        this.resultado = `Clave '${this.busqueda}' no encontrada`;
-        return;
+  // Buscar siguiendo los bits
+  buscarNodo(letra: string, binario: string): boolean {
+    let actual = this.raiz;
+    let i = 0;
+    while (actual && i < binario.length) {
+      if (actual.letra === letra) return true;
+      if (binario[i] === '0') {
+        actual = actual.izquierdo;
+      } else {
+        actual = actual.derecho;
       }
-      nodoActual = nodoActual.hijos[char];
+      i++;
     }
-
-    this.resultado = nodoActual.finDePalabra
-      ? `Clave '${this.busqueda}' encontrada`
-      : `Clave '${this.busqueda}' no completa`;
-    this.busqueda = '';
+    return actual?.letra === letra;
   }
 
-  eliminar(): void {
-    if (!this.retiro) {
-      alert('Ingrese una clave a eliminar');
+  buscar() {
+    if (!this.busqueda) {
+      alert('Ingrese un carácter');
+      return;
+    }
+    if (!this.validarTexto(this.busqueda)) {
+      alert('Solo se permite un carácter A-Z');
       return;
     }
 
-    const eliminado = this.eliminarRecursivo(this.raiz, this.retiro, 0);
-    this.resultado = eliminado
-      ? `Clave '${this.retiro}' eliminada`
-      : `Clave '${this.retiro}' no encontrada`;
+    const letra = this.busqueda.toUpperCase();
+    const binario = this.convertirLetraABinario(letra);
+    const encontrada = this.buscarNodo(letra, binario);
+
+    this.resultado = encontrada
+      ? `Carácter '${letra}' encontrado`
+      : `Carácter '${letra}' no encontrado`;
+
+    this.busqueda = '';
+    this.actualizarVisualizacion(encontrada ? 'highlight' : 'notfound', letra);
+  }
+
+  // Eliminar (se reemplaza por null al encontrarlo)
+  eliminarNodo(nodo: NodoArbol | null, letra: string, binario: string, nivel: number = 0): NodoArbol | null {
+    if (!nodo) return null;
+
+    if (nodo.letra === letra) {
+      return null; // eliminamos el nodo directamente
+    }
+
+    if (nivel < binario.length) {
+      if (binario[nivel] === '0') {
+        nodo.izquierdo = this.eliminarNodo(nodo.izquierdo, letra, binario, nivel + 1);
+      } else {
+        nodo.derecho = this.eliminarNodo(nodo.derecho, letra, binario, nivel + 1);
+      }
+    }
+
+    return nodo;
+  }
+
+  eliminar() {
+    if (!this.retiro) {
+      alert('Ingrese un carácter a eliminar');
+      return;
+    }
+    if (!this.validarTexto(this.retiro)) {
+      alert('Solo se permite un carácter A-Z');
+      return;
+    }
+
+    const letra = this.retiro.toUpperCase();
+    const binario = this.convertirLetraABinario(letra);
+    const antes = JSON.stringify(this.raiz);
+    this.raiz = this.eliminarNodo(this.raiz, letra, binario);
+
+    this.resultado =
+      antes !== JSON.stringify(this.raiz)
+        ? `Carácter '${letra}' eliminado`
+        : `Carácter '${letra}' no encontrado`;
+
     this.retiro = '';
+    this.actualizarVisualizacion();
   }
 
-  eliminarRecursivo(nodo: NodoArbol, clave: string, index: number): boolean {
-    if (index === clave.length) {
-      if (!nodo.finDePalabra) return false;
-      nodo.finDePalabra = false;
-      return Object.keys(nodo.hijos).length === 0;
-    }
+  // Visualización con vis-network
+  actualizarVisualizacion(accion: 'highlight' | 'notfound' | null = null, letra?: string) {
+    if (!this.networkContainer) return;
 
-    const char = clave[index];
-    const hijo = nodo.hijos[char];
-    if (!hijo) return false;
+    const nodes: any[] = [];
+    const edges: any[] = [];
 
-    const debeEliminar = this.eliminarRecursivo(hijo, clave, index + 1);
-    if (debeEliminar) {
-      delete nodo.hijos[char];
-      return Object.keys(nodo.hijos).length === 0 && !nodo.finDePalabra;
-    }
+    let contador = 0;
+    const recorrer = (nodo: NodoArbol | null, idPadre: number | null) => {
+      if (!nodo) return;
 
-    return false;
+      const id = contador++;
+      const color =
+        accion === 'highlight' && letra === nodo.letra
+          ? '#4FC3F7'
+          : '#8BC34A';
+
+      nodes.push({
+        id,
+        label: `${nodo.letra}\n${nodo.binario}`,
+        color
+      });
+
+      if (idPadre !== null) {
+        edges.push({ from: idPadre, to: id });
+      }
+
+      recorrer(nodo.izquierdo, id);
+      recorrer(nodo.derecho, id);
+    };
+
+    recorrer(this.raiz, null);
+
+    const data = {
+      nodes: new DataSet(nodes),
+      edges: new DataSet(edges)
+    };
+
+    const options = {
+      layout: {
+        hierarchical: {
+          direction: 'UD',
+          sortMethod: 'directed'
+        }
+      },
+      nodes: {
+        shape: 'circle',
+        font: { color: '#000', size: 14 }
+      },
+      edges: {
+        arrows: 'to',
+        color: '#9E9E9E'
+      },
+      physics: false
+    };
+
+    if (this.network) this.network.destroy();
+    this.network = new Network(this.networkContainer.nativeElement, data, options);
   }
 
+  // Exportar e importar JSON
   exportarJSON(): void {
     const exportData = {
-      tipoEstructura: 'digital',
+      tipoEstructura: 'digital-binario',
       arbol: this.raiz
     };
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+    const dataStr =
+      'data:text/json;charset=utf-8,' +
+      encodeURIComponent(JSON.stringify(exportData, null, 2));
     const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "estructura_digital.json");
+    dlAnchor.setAttribute('href', dataStr);
+    dlAnchor.setAttribute('download', 'estructura_digital_binaria.json');
     dlAnchor.click();
   }
 
@@ -132,14 +259,15 @@ export class ArbolDigitalComponent {
     reader.onload = () => {
       try {
         const json = JSON.parse(reader.result as string);
-        if (json.tipoEstructura !== 'digital') {
-          alert('El JSON no corresponde a una estructura de tipo "digital".');
+        if (json.tipoEstructura !== 'digital-binario') {
+          alert('El JSON no corresponde a una estructura válida.');
           return;
         }
         this.raiz = json.arbol;
         this.mostrarArbol = true;
         this.resultado = 'Estructura cargada correctamente';
-      } catch (err) {
+        setTimeout(() => this.actualizarVisualizacion(), 0);
+      } catch {
         alert('Error al leer el archivo JSON');
       }
     };
