@@ -28,7 +28,7 @@ import { ResiduosComponent } from './busqueda-interna/residuos/residuos.componen
     HashComponent,
     ArbolDigitalComponent,
     NodoComponent,
-    ResiduosComponent
+    ResiduosComponent,
   ],
   imports: [
     BrowserModule,

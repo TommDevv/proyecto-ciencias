@@ -1,5 +1,5 @@
 <div class="container justify-content-center">
-  <h1 class="my-3 text-center courier-prime-bold">Árbol Binario por Residuos</h1>
+  <h1 class="my-3 text-center courier-prime-bold">Árbol Binario - Búsqueda por Residuos</h1>
 
   <div class="row my-2">
     <div class="col-4">
@@ -18,25 +18,25 @@
   <div *ngIf="mostrarArbol">
     <div class="row my-3">
       <div class="col-4">
-        <label>Insertar clave</label>
+        <label>Insertar carácter</label>
         <div class="input-group">
-          <input [(ngModel)]="ingreso" class="form-control" type="text" placeholder="Ej: 1234">
+          <input [(ngModel)]="ingreso" maxlength="1" class="form-control" type="text" placeholder="Ej: A">
           <button class="btn btn-success" (click)="anadir()">Añadir</button>
         </div>
       </div>
 
       <div class="col-4">
-        <label>Buscar clave</label>
+        <label>Buscar carácter</label>
         <div class="input-group">
-          <input [(ngModel)]="busqueda" class="form-control" type="text" placeholder="Ej: 1234">
+          <input [(ngModel)]="busqueda" maxlength="1" class="form-control" type="text" placeholder="Ej: A">
           <button class="btn btn-info" (click)="buscar()">Buscar</button>
         </div>
       </div>
 
       <div class="col-4">
-        <label>Eliminar clave</label>
+        <label>Eliminar carácter</label>
         <div class="input-group">
-          <input [(ngModel)]="retiro" class="form-control" type="text" placeholder="Ej: 1234">
+          <input [(ngModel)]="retiro" maxlength="1" class="form-control" type="text" placeholder="Ej: A">
           <button class="btn btn-danger" (click)="eliminar()">Eliminar</button>
         </div>
       </div>
@@ -46,9 +46,7 @@
 
     <div class="mt-4">
       <h5>Visualización del Árbol:</h5>
-      <div class="tree-container">
-        <app-nodo [nodo]="raiz"></app-nodo>
-      </div>
+      <div #networkContainer style="width: 100%; height: 500px; border: 1px solid lightgray;"></div>
     </div>
   </div>
 </div>
