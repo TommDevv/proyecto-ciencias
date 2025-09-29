@@ -1,1 +1,105 @@
-<p>busqueda-binaria-externa works!</p>
+<div class="container justify-content-center">
+  <h1 class="my-3 text-center courier-prime-bold">Búsqueda Binaria en Memoria Externa</h1>
+
+  <div class="row my-2">
+    <div class="row">
+      <!-- Configuración -->
+      <div class="col-3" *ngIf="!mostrarEstructura">
+        <label class="form-label mb-2">Cantidad de datos (n)</label>
+        <input [(ngModel)]="cantreg" class="form-control" type="number" min="1">
+      </div>
+
+      <div class="col-3" *ngIf="!mostrarEstructura">
+        <label class="form-label mb-2">Tamaño de las claves</label>
+        <input [(ngModel)]="tamanoClave" class="form-control" type="number" min="1">
+      </div>
+
+      <div class="col-3 pt-4" *ngIf="!mostrarEstructura">
+        <button class="btn btn-dark" (click)="generarEstructura()">Generar Estructura</button>
+      </div>
+
+      <!-- Exportar / Importar -->
+      <div class="col-3 pt-4" *ngIf="mostrarEstructura">
+        <button class="btn btn-success me-2" (click)="exportarEstructura()">Exportar JSON</button>
+        <label class="btn btn-secondary">
+          Importar JSON
+          <input type="file" (change)="importarEstructura($event)" hidden accept=".json">
+        </label>
+      </div>
+
+      <!-- Operaciones -->
+      <div class="col-3 mt-3" *ngIf="mostrarEstructura">
+        <label class="form-label mb-2">Ingresar valor</label>
+        <div class="input-group">
+          <input [(ngModel)]="ingreso" class="form-control">
+          <button class="btn btn-dark" (click)="anadir()">Ingresar</button>
+        </div>
+      </div>
+
+      <div class="col-3 mt-3" *ngIf="mostrarEstructura">
+        <label class="form-label mb-2">Buscar valor</label>
+        <div class="input-group">
+          <input [(ngModel)]="busqueda" class="form-control">
+          <button class="btn btn-dark" (click)="buscar()">Buscar</button>
+        </div>
+      </div>
+
+      <div class="col-3 mt-3" *ngIf="mostrarEstructura">
+        <label class="form-label mb-2">Eliminar valor</label>
+        <div class="input-group">
+          <input [(ngModel)]="retiro" class="form-control">
+          <button class="btn btn-dark" (click)="eliminar()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloques -->
+    <div class="row mt-4" *ngIf="mostrarEstructura">
+      <h4 class="my-3">{{ resultado }}</h4>
+
+      <div class="d-flex flex-row justify-content-center flex-wrap">
+        <div class="p-2" *ngFor="let bloque of bloques; let i = index">
+          <h5 class="text-center">Bloque {{ i + 1 }}</h5>
+          <table class="table table-dark table-bordered text-center">
+            <thead>
+              <tr>
+                <th>Pos</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let valor of bloque; let j = index">
+                <td>{{ i * tamanoBloque + j + 1 }}</td>
+                <td>{{ valor }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Paso a paso -->
+      <div *ngIf="buscarFinalizado" class="mt-4">
+        <h5>Evolución de la búsqueda:</h5>
+        <div *ngFor="let paso of pasos; let k = index" class="mb-3">
+          <h6>Paso {{ k + 1 }} — Bloque {{ paso.bloque + 1 }} | Low={{ paso.low + 1 }} Mid={{ paso.mid + 1 }} High={{ paso.high + 1 }}</h6>
+          <table class="table table-bordered table-dark text-center">
+            <thead>
+              <tr>
+                <th>Posición</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let val of paso.datos; let j = index"
+                  [class.table-primary]="j === paso.mid"
+                  [class.table-secondary]="j === paso.low || j === paso.high">
+                <td>{{ j + 1 }}</td>
+                <td>{{ val }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
