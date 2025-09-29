@@ -3,6 +3,7 @@
 
   <div class="row my-2">
     <div class="row">
+      <!-- Entradas iniciales -->
       <div class="col-3" *ngIf="!mostrarEstructura">
         <label class="form-label mb-2">Cantidad de datos</label>
         <input [(ngModel)]="cantreg" class="form-control" type="number" min="1">
@@ -34,6 +35,7 @@
         <button class="btn btn-dark" (click)="generarEstructura()">Generar Estructura</button>
       </div>
 
+      <!-- Exportar / importar -->
       <div class="col-12 mt-3" *ngIf="mostrarEstructura">
         <button class="btn btn-success me-2" (click)="exportarEstructura()">Exportar JSON</button>
         <label class="btn btn-secondary">
@@ -42,6 +44,7 @@
         </label>
       </div>
 
+      <!-- Operaciones -->
       <div class="col-4 mt-3" *ngIf="mostrarEstructura">
         <input [(ngModel)]="ingreso" class="form-control" placeholder="Valor (4 dígitos)">
         <button class="btn btn-dark mt-2" (click)="anadir()">Ingresar</button>
@@ -58,28 +61,39 @@
       </div>
     </div>
 
+    <!-- Tabla -->
     <div class="row mt-4" *ngIf="mostrarEstructura">
       <h4 *ngIf="anadirFinalizado || eliminarFinalizado || buscarFinalizado">{{ resultado }}</h4>
+
       <table class="table table-dark table-bordered">
         <thead>
-        <tr>
-          <th>Índice</th>
-          <th>Valor</th>
-          <th *ngIf="colision === 'encadenamiento'">Encadenamiento</th>
-          <th *ngIf="colision === 'anidamiento'">Subestructura</th>
-        </tr>
+          <tr>
+            <th>Índice</th>
+            <th>Valor</th>
+            <th *ngIf="colision === 'encadenamiento'">Encadenamiento</th>
+            <th *ngIf="colision === 'anidamiento'">Subestructura</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let val of values; let i = index">
-          <td>{{ i }}</td>
-          <td>{{ val }}</td>
-          <td *ngIf="colision === 'encadenamiento'">
-            <ng-container *ngIf="subtablas[i]?.length! > 0">
-              <span class="badge bg-info text-dark me-1" *ngFor="let val of subtablas[i]">{{ val }}</span>
-            </ng-container>
-          </td>
-          <td *ngIf="colision === 'anidamiento'">{{ subtablas[i].join(', ') }}</td>
-        </tr>
+          <ng-container *ngFor="let fila of estructuraCompacta">
+            <tr *ngIf="!fila.elipsis"
+                [class.table-primary]="fila.posicion === contador">
+              <td>{{ fila.posicion + 1 }}</td>
+              <td>{{ values[fila.posicion] }}</td>
+              <td *ngIf="colision === 'encadenamiento'">
+                <ng-container *ngIf="subtablas[fila.posicion]?.length! > 0">
+                  <span class="badge bg-info text-dark me-1"
+                        *ngFor="let val of subtablas[fila.posicion]">
+                        {{ val }}
+                  </span>
+                </ng-container>
+              </td>
+              <td *ngIf="colision === 'anidamiento'">{{ subtablas[fila.posicion].join(', ') }}</td>
+            </tr>
+            <tr *ngIf="fila.elipsis">
+              <td colspan="4" class="text-center">...</td>
+            </tr>
+          </ng-container>
         </tbody>
       </table>
     </div>

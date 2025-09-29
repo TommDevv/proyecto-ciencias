@@ -1,11 +1,11 @@
 <div class="container justify-content-center">
-  <h1 class="my-3 text-center courier-prime-bold">Algoritmo de búsqueda Lineal</h1>
+  <h1 class="my-3 text-center courier-prime-bold">Búsqueda Lineal en Memoria Externa</h1>
 
   <div class="row my-2">
     <div class="row">
-      <!-- Configuración inicial -->
+      <!-- Configuración -->
       <div class="col-3" *ngIf="!mostrarEstructura">
-        <label class="form-label mb-2">Cantidad de datos (n) a almacenar</label>
+        <label class="form-label mb-2">Cantidad de datos (n)</label>
         <input [(ngModel)]="cantreg" class="form-control" type="number" min="1">
       </div>
 
@@ -21,7 +21,6 @@
       <!-- Exportar / Importar -->
       <div class="col-3 pt-4" *ngIf="mostrarEstructura">
         <button class="btn btn-success me-2" (click)="exportarEstructura()">Exportar JSON</button>
-
         <label class="btn btn-secondary">
           Importar JSON
           <input type="file" (change)="importarEstructura($event)" hidden accept=".json">
@@ -54,32 +53,30 @@
       </div>
     </div>
 
-    <!-- Tabla compacta -->
-    <div class="row my-4" style="padding-inline: 200px;" *ngIf="mostrarEstructura">
+    <!-- Bloques -->
+    <div class="row my-4" *ngIf="mostrarEstructura">
       <h3 class="mt-4 text-start courier-prime-bold">Estructura Generada:</h3>
       <h4 class="my-3" *ngIf="anadirFinalizado || eliminarFinalizado || buscarFinalizado">{{ resultado }}</h4>
-      <h4 class="mb-3">Filas recorridas: {{ filasRecorridas() }}</h4>
 
-      <table class="table table-dark table-bordered">
-        <thead>
-          <tr>
-            <th>Posición</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let fila of estructuraCompacta">
-            <tr *ngIf="!fila.elipsis" [class.table-primary]="fila.posicion === contador">
-              <!-- Mostrar 1-based -->
-              <td>{{ fila.posicion + 1 }}</td>
-              <td>{{ fila.valor }}</td>
+      <div class="col-12" *ngFor="let bloque of bloques; let i = index" style="margin-bottom: 20px;">
+        <h5>Bloque {{ i + 1 }}</h5>
+        <table class="table table-dark table-bordered">
+          <thead>
+            <tr>
+              <th>Posición</th>
+              <th>Valor</th>
             </tr>
-            <tr *ngIf="fila.elipsis">
-              <td colspan="2" class="text-center">...</td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let valor of bloque; let j = index"
+                [class.table-primary]="i === bloqueActual && j === filaActual"
+                [class.table-secondary]="i === bloqueActual && j !== filaActual && buscarFinalizado && valor === ''">
+              <td>{{ i * tamanoBloque + j + 1 }}</td>
+              <td>{{ valor }}</td>
             </tr>
-          </ng-container>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

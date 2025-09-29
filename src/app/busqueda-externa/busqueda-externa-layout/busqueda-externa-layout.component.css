@@ -1,0 +1,12 @@
+p {
+  font-family: "VT323", monospace;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 30px;
+}
+
+.custom-list-btn{
+    font-size: 40px;
+    font-weight:bold;
+    color: rgb(0, 0, 0);
+}

@@ -15,6 +15,11 @@ import { HashComponent } from './busqueda-interna/hash/hash.component';
 import { ArbolDigitalComponent } from './busqueda-interna/arbol-digital/arbol-digital.component';
 import { NodoComponent } from './nodo/nodo.component';
 import { ResiduosComponent } from './busqueda-interna/residuos/residuos.component';
+import { BusquedaResiduosMultiplesComponent } from './busqueda-interna/busqueda-residuos-multiples/busqueda-residuos-multiples.component';
+import { HuffmanComponent } from './busqueda-interna/huffman/huffman.component';
+import { BusquedaExternaLayoutComponent } from './busqueda-externa/busqueda-externa-layout/busqueda-externa-layout.component';
+import { BusquedaLinealExternaComponent } from './busqueda-externa/busqueda-lineal-externa/busqueda-lineal-externa.component';
+import { BusquedaBinariaExternaComponent } from './busqueda-externa/busqueda-binaria-externa/busqueda-binaria-externa.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +34,11 @@ import { ResiduosComponent } from './busqueda-interna/residuos/residuos.componen
     ArbolDigitalComponent,
     NodoComponent,
     ResiduosComponent,
+    BusquedaResiduosMultiplesComponent,
+    HuffmanComponent,
+    BusquedaExternaLayoutComponent,
+    BusquedaLinealExternaComponent,
+    BusquedaBinariaExternaComponent,
   ],
   imports: [
     BrowserModule,
